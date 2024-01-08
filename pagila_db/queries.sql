@@ -127,3 +127,11 @@ SELECT f.title
 FROM film as f
 WHERE f.film_id NOT IN (SELECT film_id from inventory)
 
+-- ALTERNATE
+SELECT f.title 
+	FROM film as f
+WHERE NOT EXISTS (
+SELECT i.film_id 
+	FROM inventory as i
+WHERE f.film_id = i.film_id)
+;
