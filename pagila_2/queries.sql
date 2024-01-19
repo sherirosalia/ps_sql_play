@@ -139,3 +139,63 @@ select * from title_count where count >7;
 
 -- drop view
 drop view title_count;
+
+
+-- * Using subqueries, identify all actors who appear in the film 
+-- ALTER VICTORY in the `pagila` database.
+SELECT first_name, last_name 
+FROM actor
+WHERE actor_id IN 
+	(SELECT actor_id FROM film_actor 
+	WHERE film_id IN 
+	 (SELECT film_id 
+	  FROM film
+	  WHERE title = 'ALTER VICTORY')
+	)
+;
+
+-- Using subqueries, display the titles of films 
+-- that were rented out by an employee named Jon Stephens.
+
+SELECT title FROM film
+WHERE film_id IN 
+	(SELECT inventory_id FROM inventory
+	WHERE inventory_id IN
+	 ( SELECT inventory_id FROM RENTAL
+		WHERE staff_id IN 
+	  	(SELECT staff_id FROM staff
+		WHERE last_name = 'Stephens' AND first_name = 'Jon') ) )
+		;
+
+-- union example
+SELECT actor_id as id, first_name, last_name 
+FROM ACTOR
+WHERE actor_id between 1 AND 5
+UNION
+SELECT customer_id as id, first_name, last_name
+FROM customer
+WHERE customer_id BETWEEN 6 AND 10;
+-- view/beginning normalization of fulltext column in film
+CREATE VIEW string_split AS
+SELECT SPLIT_PART(fulltext:: TEXT, ' ', 3) AS split_stuff
+FROM film ;
+
+-- BEAR GRACELAND actors subquery
+
+select a.first_name, a.last_name
+from actor as a
+where a.actor_id in (
+	select fa.actor_id 
+	from film_actor as fa
+		where fa.film_id in (
+			select f.film_id 
+			from film as f
+			where f.title = 'BEAR GRACELAND')) 
+	;
+
+select count(split_stuff) from string_split
+WHERE split_stuff LIKE '%canadian%';
+
+-- find max number of columns for fulltext split
+select max(array_length(string_to_array(fulltext:: TEXT, ' '), 1))
+from film;
