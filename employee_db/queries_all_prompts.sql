@@ -105,14 +105,14 @@ WHERE e.first_name = 'Hercules' AND e.last_name LIKE 'B%';
 -- SIXTH PROMPT
 -- List each employee in the Sales department, 
 -- including their employee number, last name, and first name.
--- NOTE: sales department does not exist, so I'm using marketing
+
 SELECT e.emp_no, e.last_name, e.first_name, d.dept_name
 FROM employees as e
 	JOIN dept_employees as de
 		ON e.emp_no = de.emp_no
 	INNER JOIN departments as d
 		ON d.dept_no = de.dept_no
-		 WHERE 'Marketing' ~ d.dept_name;
+		 WHERE 'Sales' ~ d.dept_name;
 
 
 
